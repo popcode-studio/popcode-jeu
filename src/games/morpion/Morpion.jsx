@@ -55,6 +55,13 @@ function Morpion() {
                 board={board}
                 onCellClick={handleCellClick}
             />
+
+            {/* Bouton rejouer visible uniquement en fin de partie */}
+            {isGameOver && (
+                <button onClick={handleRestart}>
+                    Rejouer
+                </button>
+            )}
         </div>
     )
 }
