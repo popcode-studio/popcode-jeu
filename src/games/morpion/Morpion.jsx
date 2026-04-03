@@ -1,66 +1,56 @@
 import { useState } from 'react'
 import Board from './Board'
-import {
-    createBoard,
-    playMove,
-    isCellTaken,
-    nextPlayer,
-    checkWinner,
-    isBoardFull,
-} from './Rules'
+import { checkWinner, createBoard, isBoardFull, isCellTaken, isWinningCell, nextPlayer, playMove } from './Rules'
 
-// Point d'entrée du jeu Morpion
-// Orchestre l'état de la partie, les règles et l'affichage
 function Morpion() {
     const [board, setBoard] = useState(createBoard())
     const [currentPlayer, setCurrentPlayer] = useState('X')
 
-    // On calcule le gagnant et l'état du plateau à chaque rendu
-    // Ces valeurs sont recalculées automatiquement quand board change
+    // shakingCell stocke la position de la dernière case cliquée en erreur
+    const [shakingCell, setShakingCell] = useState(null)
+
     const winner = checkWinner(board)
     const boardFull = isBoardFull(board)
-
-    // La partie est terminée si quelqu'un a gagné ou si le plateau est plein
     const isGameOver = winner !== null || boardFull
 
     function handleCellClick(x, y) {
-        // On ignore les clics si la partie est terminée
         if (isGameOver) return
 
-        // Règle : on ne peut pas jouer sur une case déjà occupée
-        if (isCellTaken(board, x, y)) return
+        if (isCellTaken(board, x, y)) {
+            // On déclenche le shake sur cette case
+            setShakingCell({ x, y })
+            // On retire le shake après 300ms pour pouvoir le redéclencher
+            setTimeout(() => setShakingCell(null), 300)
+            return
+        }
 
-        // On crée un nouveau plateau avec le coup joué
         const newBoard = playMove(board, x, y, currentPlayer)
         setBoard(newBoard)
-
-        // On passe au joueur suivant
         setCurrentPlayer(nextPlayer(currentPlayer))
     }
 
     function handleRestart() {
-        // On recrée un plateau vide et on remet X en premier
         setBoard(createBoard())
         setCurrentPlayer('X')
+        setShakingCell(null)
     }
 
     return (
         <div>
-            {/* Message selon l'état de la partie */}
-            {winner && <p>{winner} a gagné !</p>}
+            {winner && <p>{winner.player} a gagné !</p>}
             {!winner && boardFull && <p>Match nul !</p>}
             {!isGameOver && <p>Joueur actuel : {currentPlayer}</p>}
 
             <Board
                 board={board}
                 onCellClick={handleCellClick}
+                // On passe une fonction qui dit si une case est gagnante ou en train de shaker
+                isWinningCell={(x, y) => isWinningCell(winner, x, y)}
+                isShakingCell={(x, y) => shakingCell?.x === x && shakingCell?.y === y}
             />
 
-            {/* Bouton rejouer visible uniquement en fin de partie */}
             {isGameOver && (
-                <button onClick={handleRestart}>
-                    Rejouer
-                </button>
+                <button onClick={handleRestart}>Rejouer</button>
             )}
         </div>
     )
