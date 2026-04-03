@@ -21,3 +21,39 @@ export function isCellTaken(board, x, y) {
 export function nextPlayer(currentPlayer) {
     return currentPlayer === 'X' ? 'O' : 'X'
 }
+
+// Toutes les combinaisons gagnantes possibles en coordonnées [x, y]
+const WINNING_COMBINATIONS = [
+    // Lignes horizontales
+    [[0, 0], [1, 0], [2, 0]],
+    [[0, 1], [1, 1], [2, 1]],
+    [[0, 2], [1, 2], [2, 2]],
+    // Colonnes verticales
+    [[0, 0], [0, 1], [0, 2]],
+    [[1, 0], [1, 1], [1, 2]],
+    [[2, 0], [2, 1], [2, 2]],
+    // Diagonales
+    [[0, 0], [1, 1], [2, 2]],
+    [[2, 0], [1, 1], [0, 2]],
+]
+
+// Retourne le joueur gagnant ('X' ou 'O') ou null si pas de victoire
+export function checkWinner(board) {
+    for (const combination of WINNING_COMBINATIONS) {
+        // On récupère les valeurs des 3 cases de la combinaison
+        const [a, b, c] = combination.map(([x, y]) => board[y][x])
+
+        // Si les 3 cases sont identiques et non vides → victoire !
+        if (a !== null && a === b && b === c) {
+            return a
+        }
+    }
+
+    // Aucune combinaison gagnante trouvée
+    return null
+}
+
+// Retourne true si toutes les cases sont remplies (match nul)
+export function isBoardFull(board) {
+    return board.every(row => row.every(cell => cell !== null))
+}
