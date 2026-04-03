@@ -1,26 +1,10 @@
 import Grid from '../../engine/Grid'
+import CellMorpion from './CellMorpion'
 
-function CellMorpion({ x, y }) {
-    return (
-        <div
-            style={{
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#f0f0f0',
-                border: '2px solid #333',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '2rem',
-            }}
-            onClick={() => console.log(`Case ${x},${y} cliquée`)}
-        />
-    )
-}
-
-function Board() {
+// Affichage du plateau de jeu
+// Reçoit l'état du plateau et le gestionnaire de clic depuis Morpion.jsx
+// Ne contient aucune logique de jeu — uniquement la mise en page
+function Board({ board, onCellClick }) {
     return (
         <Grid
             cols={3}
@@ -28,7 +12,13 @@ function Board() {
             cellWidth={100}
             cellHeight={100}
             gap={8}
-            renderCell={(x, y) => <CellMorpion x={x} y={y} />}
+            renderCell={(x, y) => (
+                // Pour chaque case, on passe sa valeur et son gestionnaire de clic
+                <CellMorpion
+                    value={board[y][x]}
+                    onClick={() => onCellClick(x, y)}
+                />
+            )}
         />
     )
 }
