@@ -77,3 +77,8 @@ export function checkWinner(board) {
     // Aucune victoire trouvée
     return null
 }
+
+export function isWinningCell(winnerResult, x, y) {
+    if (!winnerResult) return false
+    return winnerResult.cells.some(([cx, cy]) => cx === x && cy === y)
+}

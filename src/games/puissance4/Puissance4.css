@@ -1,0 +1,62 @@
+/* Animation d'apparition du jeton */
+@keyframes dropIn {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scaleY(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+/* Animation flash cases gagnantes */
+@keyframes flash {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.jeton {
+    transform-origin: top center;
+}
+
+/* .jeton.visible {
+    animation: dropIn 0.3s ease-out forwards;
+} */
+
+.jeton.winner {
+    animation: flash 0.6s ease-in-out infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(var(--fall-distance));
+    }
+
+    80% {
+        transform: translateY(8px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.jeton.visible {
+    animation: fall 0.4s ease-in forwards;
+}
